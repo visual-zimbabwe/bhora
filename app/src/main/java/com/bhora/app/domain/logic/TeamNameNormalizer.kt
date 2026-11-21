@@ -1,6 +1,10 @@
 package com.bhora.app.domain.logic
 
+import java.text.Normalizer
+
 object TeamNameNormalizer {
+    private val diacriticsRegex = Regex("\\p{M}+")
+
     private val canonicalAliases = mapOf(
         "man city" to "manchester city",
         "man utd" to "manchester united",
@@ -25,11 +29,43 @@ object TeamNameNormalizer {
         "sheffield utd" to "sheffield united",
         "luton" to "luton town",
         "bournemouth" to "bournemouth",
-        "afc bournemouth" to "bournemouth"
+        "afc bournemouth" to "bournemouth",
+        "bayern munchen" to "bayern munich",
+        "bayern muenchen" to "bayern munich",
+        "borussia m gladbach" to "borussia monchengladbach",
+        "borussia mgladbach" to "borussia monchengladbach",
+        "m gladbach" to "borussia monchengladbach",
+        "monchengladbach" to "borussia monchengladbach",
+        "hamburger sv" to "hamburg sv",
+        "hsv" to "hamburg sv",
+        "koln" to "cologne",
+        "1 koln" to "cologne",
+        "koeln" to "cologne",
+        "1 koeln" to "cologne",
+        "1 cologne" to "cologne",
+        "1 fsv mainz 05" to "mainz",
+        "mainz 05" to "mainz",
+        "fsv mainz 05" to "mainz",
+        "bayer 04 leverkusen" to "bayer leverkusen",
+        "tsg 1899 hoffenheim" to "tsg hoffenheim",
+        "inter" to "internazionale",
+        "inter milan" to "internazionale",
+        "milan" to "ac milan",
+        "psg" to "paris saint germain",
+        "paris sg" to "paris saint germain",
+        "paris" to "paris fc",
+        "rennes" to "stade rennais",
+        "olympique lyonnais" to "lyon",
+        "olympique de marseille" to "marseille",
+        "olympique marseille" to "marseille",
+        "stade brestois" to "brest",
+        "stade brestois 29" to "brest"
     )
 
     fun normalize(name: String): String {
-        val cleaned = name
+        val ascii = Normalizer.normalize(name, Normalizer.Form.NFD)
+            .replace(diacriticsRegex, "")
+        val cleaned = ascii
             .lowercase()
             .replace("&", " and ")
             .replace("'", " ")

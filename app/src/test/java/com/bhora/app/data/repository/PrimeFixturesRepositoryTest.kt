@@ -236,4 +236,138 @@ class PrimeFixturesRepositoryTest {
         assertEquals(PrimeFixturesRepository.NOTICE_SOURCE_BLOCKED, blocked.noticeMessage)
         assertEquals(4, blocked.fixtures.size)
     }
+
+    @Test
+    fun `discovers Bundesliga, Serie A, and Ligue 1 via base-plan feeds while excluding UK Prime Video PPV`() = runTest {
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                val path = request.path.orEmpty()
+                return when {
+                    path.startsWith("/apis/site/v2/sports/soccer/ger.1/scoreboard") ->
+                        MockResponse().setResponseCode(200).setBody(
+                            """
+                            {
+                              "leagues": [{"calendar": ["2026-11-21T08:00Z"]}],
+                              "events": [
+                                {
+                                  "date": "2026-11-21T14:30Z",
+                                  "competitions": [{
+                                    "competitors": [
+                                      {"homeAway": "home", "team": {"displayName": "Hamburg SV"}},
+                                      {"homeAway": "away", "team": {"displayName": "Bayern Munich"}}
+                                    ]
+                                  }],
+                                  "status": {"type": {"state": "in", "name": "STATUS_FIRST_HALF"}}
+                                }
+                              ]
+                            }
+                            """.trimIndent()
+                        )
+
+                    path.startsWith("/apis/site/v2/sports/soccer/fra.1/scoreboard") ->
+                        MockResponse().setResponseCode(200).setBody(
+                            """
+                            {
+                              "leagues": [{"calendar": ["2026-11-21T08:00Z"]}],
+                              "events": [
+                                {
+                                  "date": "2026-11-21T20:00Z",
+                                  "competitions": [{
+                                    "competitors": [
+                                      {"homeAway": "home", "team": {"displayName": "Nice"}},
+                                      {"homeAway": "away", "team": {"displayName": "Paris Saint-Germain"}}
+                                    ]
+                                  }],
+                                  "status": {"type": {"state": "pre", "name": "STATUS_SCHEDULED"}}
+                                }
+                              ]
+                            }
+                            """.trimIndent()
+                        )
+
+                    path.startsWith("/apis/site/v2/sports/soccer/") ->
+                        MockResponse().setResponseCode(200).setBody("""{"leagues":[],"events":[]}""")
+
+                    path == "/channels/cazetv/" ->
+                        MockResponse().setResponseCode(200).setBody(
+                            """
+                            <table class="schedules">
+                              <tr id="7001" class="matchrow" data-timer="" data-cid="7">
+                                <td><span class="ts" dv="1795271400000">14:30</span></td>
+                                <td class="matchcol"><a href="/match/bayern-munchen-vs-hamburger-sv/19996#7001" title="Hamburger SV vs Bayern München">Hamburger SV vs Bayern München</a></td>
+                              </tr>
+                              <tr id="3901" class="matchrow" data-timer="" data-cid="39">
+                                <td><span class="ts" dv="1795280400000">17:00</span></td>
+                                <td class="matchcol"><a href="/match/internazionale-vs-como/6ifzs#3901" title="Internazionale vs Como">Internazionale vs Como</a></td>
+                              </tr>
+                              <tr id="1001" class="matchrow" data-timer="" data-cid="10">
+                                <td><span class="ts" dv="1795291200000">20:00</span></td>
+                                <td class="matchcol"><a href="/match/nice-vs-psg/abc12#1001" title="Nice vs PSG">Nice vs PSG</a></td>
+                              </tr>
+                            </table>
+                            """.trimIndent()
+                        )
+
+                    path == "/channels/amazon-prime-video/" ->
+                        // UK PPV Bundesliga & Ligue 1 should be excluded; UK UCL should stay included
+                        MockResponse().setResponseCode(200).setBody(
+                            """
+                            <table class="schedules">
+                              <tr id="7002" class="matchrow" data-timer="" data-cid="7">
+                                <td><span class="ts" dv="1795357800000">14:30</span></td>
+                                <td class="matchcol"><a href="/match/mainz-05-vs-augsburg/257ie#7002" title="Augsburg vs Mainz 05">Augsburg vs Mainz 05</a></td>
+                              </tr>
+                              <tr id="1002" class="matchrow" data-timer="" data-cid="10">
+                                <td><span class="ts" dv="1795370400000">18:00</span></td>
+                                <td class="matchcol"><a href="/match/lille-vs-olympique-lyonnais/1ef17#1002" title="Lille vs Olympique Lyonnais">Lille vs Olympique Lyonnais</a></td>
+                              </tr>
+                              <tr id="5001" class="matchrow" data-timer="" data-cid="50">
+                                <td><span class="ts" dv="1795550400000">20:00</span></td>
+                                <td class="matchcol"><a href="/match/arsenal-vs-borussia-dortmund/182qc#5001" title="Arsenal vs Borussia Dortmund">Arsenal vs Borussia Dortmund</a></td>
+                              </tr>
+                            </table>
+                            """.trimIndent()
+                        )
+
+                    path.startsWith("/channels/") || path.startsWith("/schedules/") ->
+                        MockResponse().setResponseCode(200).setBody("""<table class="schedules"></table>""")
+
+                    else -> MockResponse().setResponseCode(404)
+                }
+            }
+        }
+
+        val baseUrl = server.url("/").toString().trimEnd('/')
+        val http = OkHttpClient()
+        val fixedClock = Clock.fixed(Instant.parse("2026-11-21T14:45:00Z"), ZoneOffset.UTC)
+        val cache = FixtureDiskCache(File(tempFolder.root, "repo_new_leagues_cache.json"))
+
+        val repo = PrimeFixturesRepository(
+            liveSoccerTvClient = LiveSoccerTvClient(http, baseUrl = baseUrl),
+            espnClient = EspnScoreboardClient(http, baseUrl = baseUrl),
+            diskCache = cache,
+            clock = fixedClock,
+            localZoneProvider = { ZoneOffset.UTC },
+            requestStaggerMillis = 0L
+        )
+
+        val result = repo.refreshFixtures(forceBroadcastRescan = false)
+        assertFalse(result.fromCache)
+        assertNull(result.noticeMessage)
+        assertEquals(listOf("7001", "3901", "1001", "5001"), result.fixtures.map { it.id })
+
+        assertEquals(Competition.BUNDESLIGA, result.fixtures[0].competition)
+        assertEquals(MatchStatus.LIVE, result.fixtures[0].status)
+        assertEquals(listOf("Brazil"), result.fixtures[0].primeRegions.map { it.country })
+
+        assertEquals(Competition.SERIE_A, result.fixtures[1].competition)
+        assertEquals(listOf("Brazil"), result.fixtures[1].primeRegions.map { it.country })
+
+        assertEquals(Competition.LIGUE_1, result.fixtures[2].competition)
+        assertEquals(MatchStatus.UPCOMING, result.fixtures[2].status)
+        assertEquals(listOf("Brazil"), result.fixtures[2].primeRegions.map { it.country })
+
+        assertEquals(Competition.CHAMPIONS_LEAGUE, result.fixtures[3].competition)
+        assertEquals(listOf("Great Britain"), result.fixtures[3].primeRegions.map { it.country })
+    }
 }

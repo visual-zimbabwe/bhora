@@ -2,6 +2,7 @@ package com.bhora.app.domain.logic
 
 import com.bhora.app.domain.model.BroadcastRegion
 import com.bhora.app.domain.model.BroadcastService
+import com.bhora.app.domain.model.Competition
 import com.bhora.app.domain.model.MatchFilter
 import com.bhora.app.domain.model.MatchStatus
 import com.bhora.app.domain.model.PrimeFixture
@@ -24,7 +25,8 @@ class FixtureFilterEngineTest {
         away: String,
         isoUtc: String,
         status: MatchStatus,
-        regions: List<BroadcastRegion> = denmarkPrime
+        regions: List<BroadcastRegion> = denmarkPrime,
+        competition: Competition = Competition.PREMIER_LEAGUE
     ) = PrimeFixture(
         id = id,
         homeTeam = home,
@@ -32,7 +34,8 @@ class FixtureFilterEngineTest {
         kickoffUtcMillis = Instant.parse(isoUtc).toEpochMilli(),
         status = status,
         matchPath = "/match/$id",
-        primeRegions = regions
+        primeRegions = regions,
+        competition = competition
     )
 
     @Test
@@ -157,5 +160,27 @@ class FixtureFilterEngineTest {
             locale = Locale.CANADA
         )
         assertEquals("05:30 LOCAL", formattedUtcMinus7)
+    }
+
+    @Test
+    fun `matches Bundesliga, Serie A, and Ligue 1 competition queries`() {
+        val zone = ZoneId.of("UTC")
+        val now = Instant.parse("2026-11-21T12:00:00Z")
+        val cazeBrazil = listOf(BroadcastRegion("Brazil", "CazéTV (Prime Video)", "/channels/cazetv/", BroadcastService.PRIME_VIDEO))
+
+        val fixtures = listOf(
+            fixture("de1", "Bayern München", "Borussia Dortmund", "2026-11-21T17:30:00Z", MatchStatus.UPCOMING, cazeBrazil, Competition.BUNDESLIGA),
+            fixture("it1", "Internazionale", "Juventus", "2026-11-21T19:45:00Z", MatchStatus.UPCOMING, cazeBrazil, Competition.SERIE_A),
+            fixture("fr1", "Nice", "PSG", "2026-11-21T20:00:00Z", MatchStatus.UPCOMING, cazeBrazil, Competition.LIGUE_1)
+        )
+
+        val bundesliga = FixtureFilterEngine.filterAndGroup(fixtures, MatchFilter.ALL, "bundesliga", ServiceFilter.ALL, zone, now, Locale.UK)
+        assertEquals(listOf("de1"), bundesliga.single().fixtures.map { it.id })
+
+        val serieA = FixtureFilterEngine.filterAndGroup(fixtures, MatchFilter.ALL, "serie a", ServiceFilter.ALL, zone, now, Locale.UK)
+        assertEquals(listOf("it1"), serieA.single().fixtures.map { it.id })
+
+        val ligue1 = FixtureFilterEngine.filterAndGroup(fixtures, MatchFilter.ALL, "ligue 1", ServiceFilter.ALL, zone, now, Locale.UK)
+        assertEquals(listOf("fr1"), ligue1.single().fixtures.map { it.id })
     }
 }

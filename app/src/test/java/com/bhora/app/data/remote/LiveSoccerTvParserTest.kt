@@ -196,4 +196,75 @@ class LiveSoccerTvParserTest {
             )
         )
     }
+
+    @Test
+    fun `parses Bundesliga, Serie A, and Ligue 1 rows alongside existing competitions`() {
+        val html = """
+            <html><body>
+            <table class="schedules blueborder">
+              <tr id="5672922" class="matchrow" data-timer="" data-cid="7" data-has-tv="1">
+                <td class="timecol"><span class="timecell"><span class="ts" dv="1795275000000">15:30</span></span></td>
+                <td class="matchcol"><a href="/match/bayern-munchen-vs-hamburger-sv/19996#5672922" title="Hamburger SV vs Bayern München">Hamburger SV vs Bayern München</a></td>
+              </tr>
+              <tr id="5680001" class="matchrow" data-timer="" data-cid="39" data-has-tv="1">
+                <td class="timecol"><span class="timecell"><span class="ts" dv="1795280400000">17:00</span></span></td>
+                <td class="matchcol"><a href="/match/internazionale-vs-como/6ifzs#5680001" title="Internazionale vs Como">Internazionale vs Como</a></td>
+              </tr>
+              <tr id="5653094" class="matchrow" data-timer="" data-cid="10" data-has-tv="1">
+                <td class="timecol"><span class="timecell"><span class="ts" dv="1795291200000">20:00</span></span></td>
+                <td class="matchcol"><a href="/match/nice-vs-psg/abc12#5653094" title="Nice vs PSG">Nice vs PSG</a></td>
+              </tr>
+              <tr id="9999999" class="matchrow" data-timer="" data-cid="999" data-has-tv="1">
+                <td class="timecol"><span class="timecell"><span class="ts" dv="1795291200000">20:00</span></span></td>
+                <td class="matchcol"><a href="/match/other-a-vs-other-b/xyz#9999999" title="Other A vs Other B">Other A vs Other B</a></td>
+              </tr>
+            </table>
+            </body></html>
+        """.trimIndent()
+
+        val parsed = LiveSoccerTvParser.parseSupportedCompetitionRows(html)
+        assertEquals(3, parsed.size)
+        assertEquals(Competition.BUNDESLIGA, parsed[0].competition)
+        assertEquals("Hamburger SV", parsed[0].homeTeam)
+        assertEquals("Bayern München", parsed[0].awayTeam)
+        assertEquals(Competition.SERIE_A, parsed[1].competition)
+        assertEquals("Internazionale", parsed[1].homeTeam)
+        assertEquals(Competition.LIGUE_1, parsed[2].competition)
+        assertEquals("Nice", parsed[2].homeTeam)
+        assertEquals("PSG", parsed[2].awayTeam)
+        assertTrue(LiveSoccerTvParser.parsePremierLeagueRows(html).isEmpty())
+    }
+
+    @Test
+    fun `excludes UK and Ireland Prime Video PPV for Bundesliga and Ligue 1 while keeping base-plan regions`() {
+        val html = """
+            <html><body>
+            <div id="dynamic-international-tv">
+              <table class="data aleft ichannels">
+                <tr>
+                  <td><span class="flag brazil">Brazil</span></td>
+                  <td><a href="/channels/cazetv/">CazéTV</a></td>
+                </tr>
+                <tr>
+                  <td><span class="flag great-britain">Great Britain</span></td>
+                  <td><a href="/channels/amazon-prime-video/">Amazon Prime Video</a></td>
+                </tr>
+                <tr>
+                  <td><span class="flag ireland">Ireland Republic</span></td>
+                  <td><a href="/channels/amazon-prime-video/">Amazon Prime Video</a></td>
+                </tr>
+              </table>
+            </div>
+            </body></html>
+        """.trimIndent()
+
+        val bundesligaRegions = LiveSoccerTvParser.parseInternationalPrimeRegions(html, Competition.BUNDESLIGA)
+        assertEquals(listOf("Brazil"), bundesligaRegions.map { it.country })
+
+        val ligue1Regions = LiveSoccerTvParser.parseInternationalPrimeRegions(html, Competition.LIGUE_1)
+        assertEquals(listOf("Brazil"), ligue1Regions.map { it.country })
+
+        val uclRegions = LiveSoccerTvParser.parseInternationalPrimeRegions(html, Competition.CHAMPIONS_LEAGUE)
+        assertEquals(listOf("Brazil", "Great Britain", "Ireland Republic"), uclRegions.map { it.country })
+    }
 }

@@ -60,7 +60,7 @@ class FixtureDiskCache(
     }
 
     companion object {
-        const val CURRENT_VERSION = 5
+        const val CURRENT_VERSION = 6
         private const val MINUTE_MS = 60_000L
         private const val HOUR_MS = 60L * MINUTE_MS
         private const val LIVE_TTL_MS = 10L * MINUTE_MS

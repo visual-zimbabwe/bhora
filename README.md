@@ -1,6 +1,6 @@
 # Bhora
 
-**Bhora** is a minimalist native Android application (Kotlin + Jetpack Compose) that tracks live, upcoming, and today's finished **Premier League**, **La Liga**, and **UEFA Champions League** fixtures available on **Amazon Prime Video** and **no-add-on HBO Max / Max** in any country worldwide.
+**Bhora** is a minimalist native Android application (Kotlin + Jetpack Compose) that tracks live, upcoming, and today's finished **Premier League**, **La Liga**, **Bundesliga**, **Serie A**, **Ligue 1**, and **UEFA Champions League** fixtures available on **Amazon Prime Video** and **no-add-on HBO Max / Max** in any country worldwide.
 
 Built exclusively with free and open-source tools, styled after the **Bhora Matchday Canvas** design system ([DESIGN.md](DESIGN.md), [code.html](code.html), [screen.png](screen.png)).
 
@@ -8,16 +8,16 @@ Built exclusively with free and open-source tools, styled after the **Bhora Matc
 
 ## Features
 
-- **Multi-Competition Tracking:** Covers English Premier League (`cid=6`), Spanish La Liga (`cid=8`), and UEFA Champions League (`cid=50`).
+- **Multi-Competition Tracking:** Covers English Premier League (`cid=6`), Spanish La Liga (`cid=8`), German Bundesliga (`cid=7`), Italian Serie A (`cid=39`), French Ligue 1 (`cid=10`), and UEFA Champions League (`cid=50`).
 - **Global Base-Plan Coverage (No Paid Sports Add-Ons):**
   - **Amazon Prime Video:** Denmark, Sweden, Netherlands, Great Britain, Germany, Italy, San Marino, plus **CazéTV** in Brazil (carried inside Prime Video Brazil at no extra cost), and automatic daily discovery of newly added territories.
   - **HBO Max / Max:** Mexico, Brazil (UEFA Champions League), Belize, Costa Rica, Dominican Republic, El Salvador, Guatemala, Honduras, Nicaragua, and Panama.
-  - Paid sports add-on channels (such as UK/Ireland HBO Max TNT Sports) and unrelated broadcasters containing "Max" or "Prime" are excluded.
+  - Paid sports add-ons and pay-per-view tiers (such as UK/Ireland HBO Max TNT Sports and UK/Ireland Prime Video PPV for Bundesliga & Ligue 1) and unrelated broadcasters containing "Max" or "Prime" are excluded.
 - **Minimal Editorial Matchday UI:** Midnight navy (`#081423`) and gold (`#E9C349`) typographic canvas using bundled SIL Open Font License **EB Garamond** and **Manrope** fonts, with zero cards, shadows, icons, or rounded corners.
 - **Filtering & Search:**
   - Status toggle: `ALL / LIVE ONLY`
   - Service toggle: `ALL / PRIME / MAX`
-  - Borderless header search (`SEARCH CLUB`) matching club names or competitions (`EPL`, `LA LIGA`, `UCL`, `CHAMPIONS`).
+  - Borderless header search (`SEARCH CLUB`) matching club names or competitions (`EPL`, `LA LIGA`, `BUNDESLIGA`, `SERIE A`, `LIGUE 1`, `UCL`, `CHAMPIONS`).
 - **Inline Broadcast Regions:** Tap any fixture row to smoothly expand or collapse the full list of countries and channels airing that match.
 - **Live Local Timezone Sync:** Displays kickoff times in `HH:mm LOCAL` and listens to Android `ACTION_TIMEZONE_CHANGED` broadcasts and lifecycle resume events to stay synchronized automatically.
 - **Offline Disk Cache & Rate-Limit Safety:** Uses a channel-first sequential discovery pipeline with atomic JSON caching and status-aware TTLs, paired with open ESPN JSON scoreboards for lightweight 60-second foreground live status updates.
@@ -51,7 +51,7 @@ app/src/main/java/com/bhora/app/
 │   ├── remote/
 │   │   ├── LiveSoccerTvClient.kt    # Throttled OkHttp HTML client + Cloudflare challenge detection
 │   │   ├── LiveSoccerTvParser.kt    # Jsoup parser for schedules, channel feeds & 200-country tables
-│   │   └── EspnScoreboardClient.kt  # Multi-league ESPN JSON client (eng.1, esp.1, uefa.champions)
+│   │   └── EspnScoreboardClient.kt  # Multi-league ESPN JSON client (eng.1, esp.1, uefa.champions, ger.1, ita.1, fra.1)
 │   ├── cache/FixtureDiskCache.kt    # Atomic JSON disk cache with schema versioning & TTLs
 │   └── repository/PrimeFixturesRepository.kt
 └── ui/

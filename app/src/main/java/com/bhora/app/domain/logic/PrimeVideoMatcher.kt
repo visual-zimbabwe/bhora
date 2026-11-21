@@ -1,6 +1,7 @@
 package com.bhora.app.domain.logic
 
 import com.bhora.app.domain.model.BroadcastService
+import com.bhora.app.domain.model.Competition
 
 object PrimeVideoMatcher {
     private val namePatterns = listOf(
@@ -74,12 +75,25 @@ object PrimeVideoMatcher {
         "hbo max brasil"
     )
 
+    private val ukPrimePpvCompetitions = setOf(
+        Competition.BUNDESLIGA,
+        Competition.LIGUE_1
+    )
+
+    private val ukPrimePpvHrefSlugs = setOf(
+        "amazon-prime-video",
+        "prime-video-uk",
+        "amazon-prime-video-uk",
+        "amazon-prime-video-gb"
+    )
+
     fun matchBroadcastService(
         channelName: String,
         channelHref: String = "",
-        country: String = ""
+        country: String = "",
+        competition: Competition? = null
     ): BroadcastService? {
-        if (isPrimeVideoChannel(channelName, channelHref, country)) {
+        if (isPrimeVideoChannel(channelName, channelHref, country, competition)) {
             return BroadcastService.PRIME_VIDEO
         }
         if (isNoAddonHboMaxChannel(channelName, channelHref, country)) {
@@ -91,10 +105,15 @@ object PrimeVideoMatcher {
     fun isPrimeVideoChannel(
         channelName: String,
         channelHref: String = "",
-        country: String = ""
+        country: String = "",
+        competition: Competition? = null
     ): Boolean {
         val normalizedName = channelName.trim().lowercase()
         val normalizedHref = channelHref.trim().lowercase()
+
+        if (isUkPrimePpv(channelHref, country, competition)) {
+            return false
+        }
 
         if (namePatterns.any { normalizedName.contains(it) } ||
             hrefPatterns.any { normalizedHref.contains(it) }
@@ -103,6 +122,17 @@ object PrimeVideoMatcher {
         }
 
         return isBrazilCazeTv(normalizedName, normalizedHref, country)
+    }
+
+    private fun isUkPrimePpv(
+        channelHref: String,
+        country: String,
+        competition: Competition?
+    ): Boolean {
+        if (competition !in ukPrimePpvCompetitions) return false
+        val normalizedCountry = country.trim().lowercase()
+        val slug = extractChannelSlug(channelHref)
+        return normalizedCountry in hboMaxExcludedAddonCountries || slug in ukPrimePpvHrefSlugs
     }
 
     fun isNoAddonHboMaxChannel(
