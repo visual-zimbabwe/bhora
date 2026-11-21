@@ -1,0 +1,84 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Manrope:wght@300;400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "inverse-on-surface": "#263141", "on-secondary": "#3c2f00", "surface-container-lowest": "#040f1e", "surface-container-high": "#1f2b3b", "outline": "#8f9097", "secondary-container": "#af8d11", "primary-fixed-dim": "#b9c7e4", "on-secondary-container": "#342800", "on-primary-container": "#74829d", "primary-container": "#0a192f", "error-container": "#93000a", "secondary-fixed": "#ffe088", "on-tertiary-fixed-variant": "#3c4661", "on-background": "#d7e3f9", "surface": "#081423", "on-surface-variant": "#c5c6cd", "surface-bright": "#2f3a4b", "on-tertiary-fixed": "#101b33", "primary-fixed": "#d6e3ff", "primary": "#b9c7e4", "outline-variant": "#44474d", "on-tertiary": "#263049", "on-error": "#690005", "background": "#081423", "surface-container-highest": "#2a3546", "on-primary": "#233148", "on-secondary-fixed-variant": "#574500", "on-surface": "#d7e3f9", "surface-container-low": "#111c2c", "tertiary-fixed-dim": "#bcc6e6", "secondary": "#e9c349", "tertiary": "#bcc6e6", "on-primary-fixed-variant": "#39475f", "surface-dim": "#081423", "inverse-primary": "#515f78", "surface-container": "#152030", "on-error-container": "#ffdad6", "on-secondary-fixed": "#241a00", "tertiary-fixed": "#d9e2ff", "tertiary-container": "#0d1830", "surface-tint": "#b9c7e4", "secondary-fixed-dim": "#e9c349", "inverse-surface": "#d7e3f9", "on-primary-fixed": "#0d1c32", "error": "#ffb4ab", "on-tertiary-container": "#77819f", "surface-variant": "#2a3546" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-xl": "3.5rem", "space-lg": "2.25rem", "margin": "1.5rem", "space-sm": "0.75rem", "space-xs": "0.375rem", "gutter": "1rem", "space-md": "1.25rem" }, fontFamily: { "body-default": ["Manrope"], "kickoff-time": ["Manrope"], "headline-lg": ["EB Garamond"], "status-editorial": ["Manrope"], "headline-lg-mobile": ["EB Garamond"], "display-brand": ["EB Garamond"], "fixture-team": ["Manrope"] }, fontSize: { "body-default": ["0.9375rem", { "lineHeight": "1.5rem", "letterSpacing": "0.01em", "fontWeight": "400" }], "kickoff-time": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.12em", "fontWeight": "500" }], "headline-lg": ["2.25rem", { "lineHeight": "2.6rem", "letterSpacing": "-0.01em", "fontWeight": "400" }], "status-editorial": ["0.6875rem", { "lineHeight": "1rem", "letterSpacing": "0.2em", "fontWeight": "600" }], "headline-lg-mobile": ["1.85rem", { "lineHeight": "2.2rem", "letterSpacing": "-0.01em", "fontWeight": "400" }], "display-brand": ["3.25rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.02em", "fontWeight": "400" }], "fixture-team": ["1.125rem", { "lineHeight": "1.6rem", "letterSpacing": "0.08em", "fontWeight": "300" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#081423;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-default text-on-surface antialiased flex flex-col min-h-screen selection:bg-secondary selection:text-on-secondary"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe"><div class="h-16 px-margin flex items-center justify-between"><span class="font-display-brand text-2xl italic tracking-tight text-secondary select-none whitespace-nowrap" style="font-family: &quot;Playfair Display&quot;, &quot;Brush Script MT&quot;, &quot;Great Vibes&quot;, cursive, serif;">Bhora</span><div class="flex items-center"><input autocomplete="off" class="bg-transparent text-right font-kickoff-time text-kickoff-time text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:placeholder:text-transparent tracking-widest uppercase transition-opacity w-36" id="search-input" maxlength="15" placeholder="Search club" spellcheck="false" type="text"></div></div></header><main class="flex-1 flex flex-col relative w-full px-margin pt-16 bg-surface pb-6"><div class="flex flex-col w-full text-on-surface">
+
+
+<div class="flex flex-col space-y-10" id="fixtures-container"><div class="text-center pb-2"><span class="font-status-editorial text-status-editorial tracking-[0.25em] text-secondary/80 uppercase">Prime Video Broadcast</span></div><div class="flex items-center justify-center gap-4 py-2 my-6 select-none whitespace-nowrap"><button id="filter-all" type="button" class="bg-transparent font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity whitespace-nowrap text-secondary">All</button><span class="text-on-surface-variant/40 font-status-editorial text-[10px] select-none">/</span><button id="filter-live" type="button" class="bg-transparent font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity whitespace-nowrap text-on-surface-variant/40">Live Only</button></div><div class="fixture-group flex flex-col space-y-6" data-group-date="2025-05-18"><div class="text-center font-status-editorial text-status-editorial tracking-[0.25em] text-on-surface-variant/50 uppercase border-b border-surface-variant/30 pb-6">Sunday 18 May</div><div class="fixture-item flex flex-col items-center text-center py-3" data-away="Chelsea" data-home="Arsenal" data-utc="2025-05-18T15:30:00Z" data-status="live"><div class="font-headline-lg italic text-on-surface text-2xl tracking-tight leading-normal flex items-center justify-center gap-3 w-full"><span class="inline-block whitespace-nowrap">Arsenal</span><span class="not-italic font-status-editorial text-[10px] text-on-surface-variant/40 tracking-[0.3em] uppercase">vs</span><span class="inline-block whitespace-nowrap">Chelsea</span></div><span class="kickoff-display mt-1.5 font-kickoff-time text-kickoff-time text-on-surface-variant/70 tracking-widest">16:30 BST</span><span class="mt-1 font-status-editorial text-[10px] tracking-[0.25em] text-secondary uppercase whitespace-nowrap">LIVE</span></div><div class="fixture-item flex flex-col items-center text-center py-3" data-away="Manchester City" data-home="Liverpool" data-utc="2025-05-18T18:00:00Z" data-status="upcoming"><div class="font-headline-lg italic text-on-surface text-2xl tracking-tight leading-normal flex items-center justify-center gap-3 w-full"><span class="inline-block whitespace-nowrap">Liverpool</span><span class="not-italic font-status-editorial text-[10px] text-on-surface-variant/40 tracking-[0.3em] uppercase">vs</span><span class="inline-block whitespace-nowrap">Manchester City</span></div><span class="kickoff-display mt-1.5 font-kickoff-time text-kickoff-time text-on-surface-variant/70 tracking-widest">19:00 BST</span><span class="mt-1 font-status-editorial text-[10px] tracking-[0.25em] text-on-surface-variant/40 uppercase whitespace-nowrap">UPCOMING</span></div></div><div class="fixture-group flex flex-col space-y-6 py-3" data-group-date="2025-05-19"><div class="text-center font-status-editorial text-status-editorial tracking-[0.25em] text-on-surface-variant/50 uppercase border-b border-surface-variant/30 pb-6">Monday 19 May</div><div class="fixture-item flex flex-col items-center text-center py-3" data-away="Newcastle" data-home="Tottenham" data-utc="2025-05-19T19:00:00Z" data-status="upcoming"><div class="font-headline-lg italic text-on-surface text-2xl tracking-tight leading-normal flex items-center justify-center gap-3 w-full"><span class="inline-block whitespace-nowrap">Tottenham</span><span class="not-italic font-status-editorial text-[10px] text-on-surface-variant/40 tracking-[0.3em] uppercase">vs</span><span class="inline-block whitespace-nowrap">Newcastle</span></div><span class="kickoff-display mt-1.5 font-kickoff-time text-kickoff-time text-on-surface-variant/70 tracking-widest">20:00 BST</span><span class="mt-1 font-status-editorial text-[10px] tracking-[0.25em] text-on-surface-variant/40 uppercase whitespace-nowrap">UPCOMING</span></div><div class="fixture-item flex flex-col items-center text-center py-3" data-away="Manchester United" data-home="Aston Villa" data-utc="2025-05-19T21:15:00Z" data-status="upcoming"><div class="font-headline-lg italic text-on-surface text-2xl tracking-tight leading-normal flex items-center justify-center gap-3 w-full"><span class="inline-block whitespace-nowrap">Aston Villa</span><span class="not-italic font-status-editorial text-[10px] text-on-surface-variant/40 tracking-[0.3em] uppercase">vs</span><span class="inline-block whitespace-nowrap">Manchester United</span></div><span class="kickoff-display mt-1.5 font-kickoff-time text-kickoff-time text-on-surface-variant/70 tracking-widest">22:15 BST</span><span class="mt-1 font-status-editorial text-[10px] tracking-[0.25em] text-on-surface-variant/40 uppercase whitespace-nowrap">UPCOMING</span></div></div></div>
+<div class="hidden text-center py-12" id="no-results">
+<span class="font-status-editorial text-status-editorial tracking-[0.25em] text-on-surface-variant/40 uppercase">
+      No Fixtures Found
+    </span>
+</div>
+<script>
+    (function initFixtures() {
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      const tzLabel = document.getElementById('detected-tz-label');
+      if (tzLabel) {
+        const shortName = userTimeZone.replace(/_/g, ' ');
+        tzLabel.textContent = 'Times shown in ' + shortName;
+      }
+
+      const timeFormatter = new Intl.DateTimeFormat(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZoneName: 'short'
+      });
+
+      const fixtureItems = document.querySelectorAll('.fixture-item');
+      fixtureItems.forEach(item => {
+        const utcStr = item.getAttribute('data-utc');
+        if (utcStr) {
+          const date = new Date(utcStr);
+          const formatted = timeFormatter.format(date);
+          const timeElem = item.querySelector('.kickoff-display');
+          if (timeElem) {
+            timeElem.textContent = formatted;
+          }
+        }
+      });
+
+      const searchInput = document.getElementById('search-input');
+      const groups = document.querySelectorAll('.fixture-group');
+      const noResults = document.getElementById('no-results');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const query = (e.target.value || '').trim().toLowerCase();
+          let totalVisible = 0;
+
+          groups.forEach(group => {
+            const matches = group.querySelectorAll('.fixture-item');
+            let groupVisible = 0;
+
+            matches.forEach(m => {
+              const home = (m.getAttribute('data-home') || '').toLowerCase();
+              const away = (m.getAttribute('data-away') || '').toLowerCase();
+
+              if (!query || home.includes(query) || away.includes(query)) {
+                m.classList.remove('hidden');
+                groupVisible++;
+                totalVisible++;
+              } else {
+                m.classList.add('hidden');
+              }
+            });
+
+            if (groupVisible === 0) {
+              group.classList.add('hidden');
+            } else {
+              group.classList.remove('hidden');
+            }
+          });
+
+          if (totalVisible === 0) {
+            noResults.classList.remove('hidden');
+          } else {
+            noResults.classList.add('hidden');
+          }
+        });
+      }
+    })();
+  </script>
+</div><script>(function initFilter() { var filterAll = document.getElementById('filter-all'); var filterLive = document.getElementById('filter-live'); if (!filterAll || !filterLive) return; var activeFilter = 'all'; function updateFilterUi() { if (activeFilter === 'all') { filterAll.className = 'bg-transparent text-secondary font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity'; filterLive.className = 'bg-transparent text-on-surface-variant/40 font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity'; } else { filterAll.className = 'bg-transparent text-on-surface-variant/40 font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity'; filterLive.className = 'bg-transparent text-secondary font-status-editorial text-[10px] tracking-[0.25em] uppercase focus:outline-none transition-opacity'; } } function applyFiltering() { var searchInput = document.getElementById('search-input'); var query = (searchInput && searchInput.value || '').trim().toLowerCase(); var groups = document.querySelectorAll('.fixture-group'); var noResults = document.getElementById('no-results'); var totalVisible = 0; groups.forEach(function(group) { var matches = group.querySelectorAll('.fixture-item'); var groupVisible = 0; matches.forEach(function(m) { var home = (m.getAttribute('data-home') || '').toLowerCase(); var away = (m.getAttribute('data-away') || '').toLowerCase(); var status = m.getAttribute('data-status') || ''; var matchesSearch = !query || home.includes(query) || away.includes(query); var matchesLive = (activeFilter === 'all') || (status === 'live'); if (matchesSearch && matchesLive) { m.classList.remove('hidden'); groupVisible++; totalVisible++; } else { m.classList.add('hidden'); } }); if (groupVisible === 0) { group.classList.add('hidden'); } else { group.classList.remove('hidden'); } }); if (noResults) { if (totalVisible === 0) { noResults.classList.remove('hidden'); } else { noResults.classList.add('hidden'); } } } filterAll.addEventListener('click', function() { activeFilter = 'all'; updateFilterUi(); applyFiltering(); }); filterLive.addEventListener('click', function() { activeFilter = 'live'; updateFilterUi(); applyFiltering(); }); var searchInput = document.getElementById('search-input'); if (searchInput) { searchInput.addEventListener('input', function() { applyFiltering(); }); } })();</script></main>
+
+</body></html>
