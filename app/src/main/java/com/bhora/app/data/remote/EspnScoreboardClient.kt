@@ -71,7 +71,7 @@ class EspnScoreboardClient(
     companion object {
         const val DEFAULT_BASE_URL = "https://site.api.espn.com"
         const val DEFAULT_LEAGUE_SLUG = "eng.1"
-        val SUPPORTED_LEAGUE_SLUGS = listOf("eng.1", "esp.1", "uefa.champions")
+        val SUPPORTED_LEAGUE_SLUGS = listOf("eng.1", "esp.1", "uefa.champions", "ger.1", "ita.1", "fra.1")
         private val json = Json { ignoreUnknownKeys = true }
 
         fun parseScoreboardJson(jsonText: String): EspnSnapshot {

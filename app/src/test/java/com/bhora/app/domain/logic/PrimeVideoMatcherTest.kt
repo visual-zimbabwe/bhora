@@ -1,6 +1,7 @@
 package com.bhora.app.domain.logic
 
 import com.bhora.app.domain.model.BroadcastService
+import com.bhora.app.domain.model.Competition
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -103,5 +104,78 @@ class PrimeVideoMatcherTest {
     fun `normalizes channel display name cleanly`() {
         assertEquals("Amazon Prime Video", PrimeVideoMatcher.normalizeChannelDisplayName("  Amazon   Prime Video "))
         assertEquals("Amazon Prime Video", PrimeVideoMatcher.normalizeChannelDisplayName("   "))
+    }
+
+    @Test
+    fun `excludes UK and Ireland Prime Video PPV for Bundesliga and Ligue 1 while keeping base-plan broadcasts`() {
+        assertNull(
+            PrimeVideoMatcher.matchBroadcastService(
+                "Amazon Prime Video",
+                "/channels/amazon-prime-video/",
+                "Great Britain",
+                Competition.BUNDESLIGA
+            )
+        )
+        assertNull(
+            PrimeVideoMatcher.matchBroadcastService(
+                "Amazon Prime Video",
+                "/channels/amazon-prime-video/",
+                "Ireland Republic",
+                Competition.LIGUE_1
+            )
+        )
+        assertEquals(
+            BroadcastService.PRIME_VIDEO,
+            PrimeVideoMatcher.matchBroadcastService(
+                "Amazon Prime Video",
+                "/channels/amazon-prime-video/",
+                "Great Britain",
+                Competition.CHAMPIONS_LEAGUE
+            )
+        )
+        assertEquals(
+            BroadcastService.PRIME_VIDEO,
+            PrimeVideoMatcher.matchBroadcastService(
+                "Amazon Prime Video",
+                "/channels/amazon-prime-video-germany/",
+                "Germany",
+                Competition.BUNDESLIGA
+            )
+        )
+        assertEquals(
+            BroadcastService.PRIME_VIDEO,
+            PrimeVideoMatcher.matchBroadcastService(
+                "CazéTV",
+                "/channels/cazetv/",
+                "Brazil",
+                Competition.BUNDESLIGA
+            )
+        )
+        assertEquals(
+            BroadcastService.PRIME_VIDEO,
+            PrimeVideoMatcher.matchBroadcastService(
+                "CazéTV",
+                "/channels/cazetv/",
+                "Brazil",
+                Competition.SERIE_A
+            )
+        )
+        assertEquals(
+            BroadcastService.PRIME_VIDEO,
+            PrimeVideoMatcher.matchBroadcastService(
+                "CazéTV",
+                "/channels/cazetv/",
+                "Brazil",
+                Competition.LIGUE_1
+            )
+        )
+        assertNull(
+            PrimeVideoMatcher.matchBroadcastService(
+                "HBO Max",
+                "/channels/hbo-maxgb/",
+                "Great Britain",
+                Competition.SERIE_A
+            )
+        )
     }
 }

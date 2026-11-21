@@ -140,7 +140,10 @@ object LiveSoccerTvParser {
         return MatchStatus.UPCOMING
     }
 
-    fun parseInternationalPrimeRegions(html: String): List<BroadcastRegion> {
+    fun parseInternationalPrimeRegions(
+        html: String,
+        competition: Competition? = null
+    ): List<BroadcastRegion> {
         val doc = Jsoup.parse(html)
         val rows = doc.select("#dynamic-international-tv table.ichannels tr").ifEmpty {
             doc.select("table.ichannels tr")
@@ -160,7 +163,7 @@ object LiveSoccerTvParser {
             for (anchor in channelLinks) {
                 val rawName = anchor.text().trim()
                 val href = anchor.attr("href").trim()
-                val matchedService = PrimeVideoMatcher.matchBroadcastService(rawName, href, country)
+                val matchedService = PrimeVideoMatcher.matchBroadcastService(rawName, href, country, competition)
                 if (matchedService != null) {
                     val normalizedChannel = PrimeVideoMatcher.normalizeChannelDisplayName(rawName, href, country)
                     val dedupeKey = country.lowercase() to normalizedChannel.lowercase()

@@ -3,6 +3,7 @@ package com.bhora.app.data.remote
 import com.bhora.app.domain.logic.TeamNameNormalizer
 import com.bhora.app.domain.model.MatchStatus
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
@@ -92,5 +93,26 @@ class EspnScoreboardParserTest {
         assertTrue(TeamNameNormalizer.matchPairsEqual("AFC Bournemouth", "Nott'm Forest", "Bournemouth", "Nottingham Forest"))
         assertTrue(TeamNameNormalizer.matchPairsEqual("Man City", "Brighton & Hove Albion", "Manchester City", "Brighton"))
         assertTrue(TeamNameNormalizer.matchPairsEqual("Spurs", "Wolves", "Tottenham Hotspur", "Wolverhampton Wanderers"))
+
+        // Bundesliga, Serie A, and Ligue 1 variants
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Hamburger SV", "Bayern München", "Hamburg SV", "Bayern Munich"))
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Borussia M'gladbach", "1. FC Köln", "Borussia Mönchengladbach", "FC Cologne"))
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Inter Milan", "Roma", "Internazionale", "AS Roma"))
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Nice", "PSG", "Nice", "Paris Saint-Germain"))
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Rennes", "Olympique Lyonnais", "Stade Rennais", "Lyon"))
+        assertTrue(TeamNameNormalizer.matchPairsEqual("Saint-Étienne", "Paris", "Saint-Etienne", "Paris FC"))
+
+        // Avoid false-positive collisions between same-city clubs
+        assertFalse(TeamNameNormalizer.teamsMatch("Paris", "Paris Saint-Germain"))
+        assertFalse(TeamNameNormalizer.teamsMatch("Paris FC", "Paris Saint-Germain"))
+        assertFalse(TeamNameNormalizer.teamsMatch("Inter Milan", "AC Milan"))
+    }
+
+    @Test
+    fun `includes Bundesliga, Serie A, and Ligue 1 ESPN league slugs`() {
+        assertEquals(
+            listOf("eng.1", "esp.1", "uefa.champions", "ger.1", "ita.1", "fra.1"),
+            EspnScoreboardClient.SUPPORTED_LEAGUE_SLUGS
+        )
     }
 }

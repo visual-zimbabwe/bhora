@@ -22,7 +22,10 @@ enum class Competition(
 ) {
     PREMIER_LEAGUE("6", "PREMIER LEAGUE"),
     LA_LIGA("8", "LA LIGA"),
-    CHAMPIONS_LEAGUE("50", "CHAMPIONS LEAGUE");
+    CHAMPIONS_LEAGUE("50", "CHAMPIONS LEAGUE"),
+    BUNDESLIGA("7", "BUNDESLIGA"),
+    SERIE_A("39", "SERIE A"),
+    LIGUE_1("10", "LIGUE 1");
 
     companion object {
         fun fromLiveSoccerTvCid(cid: String): Competition? =

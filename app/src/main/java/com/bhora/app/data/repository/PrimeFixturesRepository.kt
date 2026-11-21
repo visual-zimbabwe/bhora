@@ -10,6 +10,7 @@ import com.bhora.app.data.remote.LiveSoccerTvClient
 import com.bhora.app.data.remote.LiveSoccerTvParser
 import com.bhora.app.data.remote.MatchStub
 import com.bhora.app.data.remote.SourceBlockedException
+import com.bhora.app.domain.logic.PrimeVideoMatcher
 import com.bhora.app.domain.logic.TeamNameNormalizer
 import com.bhora.app.domain.model.BroadcastRegion
 import com.bhora.app.domain.model.BroadcastService
@@ -93,7 +94,8 @@ class PrimeFixturesRepository(
         var channelSuccessCount = 0
 
         // Stage 1: Fetch verified global channel schedules sequentially with polite pacing (9 requests total)
-        // Covers Premier League (6), La Liga (8), and UCL (50) up to 2–3 weeks ahead without burst limits.
+        // Covers Premier League (6), La Liga (8), UCL (50), Bundesliga (7), Serie A (39), and Ligue 1 (10)
+        // up to 2–3 weeks ahead without burst limits.
         for ((index, feed) in KNOWN_CHANNEL_FEEDS.withIndex()) {
             if (index > 0 && requestStaggerMillis > 0L) delay(requestStaggerMillis)
             try {
@@ -101,9 +103,18 @@ class PrimeFixturesRepository(
                 channelSuccessCount++
                 for (stub in LiveSoccerTvParser.parseSupportedCompetitionRows(html)) {
                     if (!isWithinDisplayWindow(stub, localToday, localZone)) continue
+                    val eligibleRegions = feed.regions.filter { region ->
+                        PrimeVideoMatcher.matchBroadcastService(
+                            channelName = region.channelName,
+                            channelHref = region.channelPath,
+                            country = region.country,
+                            competition = stub.competition
+                        ) != null
+                    }
+                    if (eligibleRegions.isEmpty()) continue
                     stubsById[stub.id] = mergeStub(stubsById[stub.id], stub)
                     val list = regionsByMatchId.getOrPut(stub.id) { mutableListOf() }
-                    list.addAll(feed.regions)
+                    list.addAll(eligibleRegions)
                 }
             } catch (_: SourceBlockedException) {
                 sourceBlocked = true
@@ -170,7 +181,7 @@ class PrimeFixturesRepository(
                         scannedCount++
                         try {
                             val matchHtml = liveSoccerTvClient.fetchMatchPage(stub.matchPath)
-                            val parsed = LiveSoccerTvParser.parseInternationalPrimeRegions(matchHtml)
+                            val parsed = LiveSoccerTvParser.parseInternationalPrimeRegions(matchHtml, stub.competition)
                             updatedChecks[stub.id] = CachedBroadcastEntry(
                                 checkedAtMillis = nowMillis,
                                 primeRegions = parsed
